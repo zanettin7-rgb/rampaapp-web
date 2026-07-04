@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RampaApp — Rampas de barco cooperativas no Brasil</title>
+  <meta name="description" content="Encontre e cadastre rampas de barco em todo o Brasil. Cooperativo, gratuito e feito pela comunidade náutica.">
+  <meta property="og:title" content="RampaApp">
+  <meta property="og:description" content="Encontre rampas de barco em todo o Brasil.">
+  <meta property="og:image" content="https://rampaapp.com.br/og.png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ocean:       #005F8E;
+      --ocean-dark:  #003F5E;
+      --ocean-mid:   #4A90B8;
+      --tropical:    #00B4D8;
+      --sunset:      #FF8000;
+      --sunset-lt:   #FFA333;
+      --ground:      #F0F7FC;
+      --ink:         #1A2E3B;
+      --ink-mid:     #546E7A;
+      --ink-muted:   #90A4AE;
+      --border:      #DCE8F0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--ground);
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── AUTH SCREENS ── */
+    #screen-recovery,
+    #screen-confirmed {
+      display: none;
+      min-height: 100dvh;
+      align-items: center;
+      justify-content: center;
+      background: var(--ocean-dark);
+      padding: 24px;
+    }
+
+    .auth-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+    }
+
+    .auth-logo {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 24px;
+    }
+    .auth-logo span { color: var(--sunset); }
+
+    .auth-card h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .auth-card p {
+      font-size: 14px;
+      color: var(--ink-mid);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .field-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 13px 14px;
+      font-size: 15px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      color: var(--ink);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.15s;
+      margin-bottom: 14px;
+    }
+    .field-input:focus { border-color: var(--ocean); box-shadow: 0 0 0 3px rgba(0,95,142,0.10); }
+
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: var(--sunset);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: opacity 0.15s;
+      margin-top: 4px;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-primary:disabled { opacity: 0.55; cursor: default; }
+
+    .auth-msg {
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-top: 12px;
+      display: none;
+    }
+    .auth-msg.ok  { background: #E8F8F0; color: #1a7a44; }
+    .auth-msg.err { background: #FDE0DC; color: #8a1a14; }
+
+    .confirmed-icon {
+      width: 64px; height: 64px;
+      background: #E8F8F0;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--ocean-dark);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky; top: 0; z-index: 100;
+    }
+
+    .nav-logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--sunset-lt); }
+
+    .nav-cta {
+      padding: 8px 18px;
+      background: var(--sunset);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 99px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .nav-cta:hover { opacity: 0.9; }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--ocean-dark);
+      padding: 80px 24px 0;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--sunset-lt);
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 7vw, 64px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      color: #fff;
+      line-height: 1.05;
+      max-width: 680px;
+      margin: 0 auto 20px;
+      text-wrap: balance;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--sunset-lt);
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: rgba(255,255,255,0.70);
+      max-width: 440px;
+      margin: 0 auto 36px;
+      line-height: 1.5;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 52px;
+    }
+
+    .btn-store {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 22px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .btn-store:hover { transform: translateY(-2px); opacity: 0.92; }
+    .btn-store-play  { background: var(--sunset);  color: #fff; }
+    .btn-store-ghost { background: rgba(255,255,255,0.10); color: #fff; border: 1.5px solid rgba(255,255,255,0.25); }
+
+    .btn-store svg { flex-shrink: 0; }
+
+    /* Phone mockup */
+    .hero-phone {
+      display: inline-block;
+      width: min(280px, 70vw);
+      height: auto;
+      background: var(--ocean);
+      border-radius: 32px 32px 0 0;
+      padding: 20px 16px 0;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+      position: relative;
+    }
+
+    .phone-screen {
+      background: var(--ground);
+      border-radius: 20px 20px 0 0;
+      overflow: hidden;
+      aspect-ratio: 9/16;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-header {
+      background: var(--ocean-dark);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .phone-logo-text {
+      font-size: 16px; font-weight: 800; letter-spacing: -0.3px; color: #fff;
+    }
+    .phone-logo-text span { color: var(--sunset-lt); }
+
+    .phone-map {
+      flex: 1;
+      background: linear-gradient(160deg, #cde8f5 0%, #a8d4eb 40%, #7fbdd8 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Simulated map elements */
+    .map-road {
+      position: absolute;
+      background: rgba(255,255,255,0.5);
+      border-radius: 2px;
+    }
+
+    .map-pin {
+      position: absolute;
+      width: 28px; height: 28px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .map-pin::after {
+      content: '';
+      width: 12px; height: 12px;
+      background: #fff;
+      border-radius: 50%;
+    }
+
+    .phone-card {
+      background: #fff;
+      margin: 0 10px 10px;
+      border-radius: 12px;
+      padding: 10px 12px;
+      box-shadow: 0 2px 8px rgba(0,95,142,0.12);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .phone-card-icon {
+      width: 36px; height: 36px;
+      background: var(--ground);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .phone-card-name { font-size: 12px; font-weight: 700; color: var(--ink); }
+    .phone-card-loc  { font-size: 10px; color: var(--ink-muted); }
+    .phone-card-badge {
+      margin-left: auto;
+      background: #D4F5E4;
+      color: #1a7a44;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 99px;
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 80px 24px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--ocean-mid);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--ink);
+      margin-bottom: 48px;
+      max-width: 480px;
+      text-wrap: balance;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+    }
+
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--ink-mid);
+      line-height: 1.6;
+    }
+
+    /* ── STATUS ── */
+    .status-section {
+      background: var(--ocean);
+      padding: 72px 24px;
+    }
+
+    .status-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .status-section .section-eyebrow { color: rgba(255,255,255,0.55); }
+    .status-section .section-title   { color: #fff; margin-bottom: 40px; }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .status-chip {
+      border-radius: 14px;
+      padding: 20px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .status-dot-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+    }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .status-name { font-size: 13px; font-weight: 700; color: #fff; }
+    .status-desc { font-size: 12px; color: rgba(255,255,255,0.60); line-height: 1.4; }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      padding: 80px 24px;
+      text-align: center;
+      background: var(--ground);
+    }
+
+    .cta-section h2 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--ink);
+      margin-bottom: 16px;
+      text-wrap: balance;
+    }
+
+    .cta-section p {
+      font-size: 16px;
+      color: var(--ink-mid);
+      margin-bottom: 32px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ocean-dark);
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .footer-logo span { color: var(--sunset-lt); }
+
+    footer p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.40);
+    }
+
+    footer a {
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      font-size: 12px;
+    }
+    footer a:hover { color: #fff; }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin: 12px 0 20px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding-top: 52px; }
+      .hero h1 { letter-spacing: -1px; }
+      .auth-card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ -->
+<!-- AUTH: RECOVERY (nova senha)           -->
+<!-- ══════════════════════════════════════ -->
+<div id="screen-recovery">
+  <div class="auth-card">
+    <div class="auth-logo">Rampa<span>App</span></div>
+    <h1>Nova senha</h1>
+    <p>Digite e confirme a sua nova senha abaixo.</p>
+
+    <label class="field-label" for="nova-senha">Nova senha</label>
+    <input class="field-input" type="password" id="nova-senha" placeholder="Mínimo 6 caracteres">
+
+    <label class="field-label" for="confirmar-senha">Confirmar senha</label>
+    <input class="field-input" type="password" id="confirmar-senha" placeholder="Repita a senha">
+
+    <button class="btn-primary" id="btn-salvar-senha">Salvar nova senha</button>
+    <div class="auth-msg" id="recovery-msg"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- AUTH: EMAIL CONFIRMADO               -->
+<!-- ══════════════════════════════════════ -->
+<div id="screen-confirmed">
+  <div class="auth-card">
+    <div class="auth-logo">Rampa<span>App</span></div>
+    <div class="confirmed-icon">✅</div>
+    <h1>E-mail confirmado!</h1>
+    <p>Sua conta está ativa. Abra o RampaApp no seu celular para começar a explorar rampas de barco.</p>
+    <a href="https://play.google.com/store/apps/details?id=com.kaiquezanettin.rampaapp" class="btn-primary" style="display:block;text-align:center;text-decoration:none;margin-top:8px;">
+      Abrir no Google Play
+    </a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- LANDING PAGE                          -->
+<!-- ══════════════════════════════════════ -->
+<div id="screen-landing">
+
+  <!-- Nav -->
+  <nav>
+    <a href="/" class="nav-logo">Rampa<span>App</span></a>
+    <a href="https://play.google.com/store/apps/details?id=com.kaiquezanettin.rampaapp" class="nav-cta">Baixar grátis</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">Cooperativo · Gratuito · Feito pela comunidade</div>
+    <h1>Encontre rampas de barco em todo o <em>Brasil</em></h1>
+    <p class="hero-sub">Mapa colaborativo atualizado por quem usa. Cadastre, avalie e ajude outros boaters a lançar sem surpresas.</p>
+
+    <div class="hero-actions">
+      <a href="https://play.google.com/store/apps/details?id=com.kaiquezanettin.rampaapp" class="btn-store btn-store-play">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3.18 23.65a2 2 0 0 1-.94-1.72V2.07A2 2 0 0 1 3.18.35l12.5 11.65L3.18 23.65z"/>
+          <path d="M16.69 13.65l2.84-2.65 3.2 1.84a1.5 1.5 0 0 1 0 2.62l-3.2 1.84-2.84-2.65z" opacity=".7"/>
+          <path d="M15.68 12.72L4.07 1.1l11.61 6.7 2.68 2.5-2.68 2.42z" opacity=".85"/>
+          <path d="M4.07 22.9l11.61-11.62-2.68 2.42-8.93 9.2z" opacity=".65"/>
+        </svg>
+        Google Play
+      </a>
+      <a href="#como-funciona" class="btn-store btn-store-ghost">
+        Como funciona ↓
+      </a>
+    </div>
+
+    <!-- Phone mockup -->
+    <div class="hero-phone">
+      <div class="phone-screen">
+        <div class="phone-header">
+          <span class="phone-logo-text">Rampa<span>App</span></span>
+        </div>
+        <div class="phone-map">
+          <!-- Roads -->
+          <div class="map-road" style="width:2px;height:100%;left:45%;top:0;"></div>
+          <div class="map-road" style="width:100%;height:2px;top:38%;left:0;"></div>
+          <div class="map-road" style="width:100%;height:2px;top:62%;left:0;opacity:.5;"></div>
+          <!-- Pins -->
+          <div class="map-pin" style="background:#2ECC71;top:25%;left:30%;"></div>
+          <div class="map-pin" style="background:#FF8000;top:50%;left:58%;width:22px;height:22px;"></div>
+          <div class="map-pin" style="background:#2ECC71;top:68%;left:22%;width:22px;height:22px;"></div>
+        </div>
+        <div class="phone-card">
+          <div class="phone-card-icon">⚓</div>
+          <div>
+            <div class="phone-card-name">Rampa do Pecado</div>
+            <div class="phone-card-loc">📍 Florianópolis, SC</div>
+          </div>
+          <div class="phone-card-badge">Boa</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="como-funciona">
+    <div class="section-eyebrow">Por que usar</div>
+    <h2 class="section-title">Tudo que você precisa antes de lançar</h2>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#E0F7FA;">🗺️</div>
+        <h3>Mapa de rampas</h3>
+        <p>Visualize todas as rampas cadastradas no mapa, com filtros por condição e localização.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#FFF3E0;">📊</div>
+        <h3>Status atualizado</h3>
+        <p>Cada rampa tem status reportado pela comunidade: Boa, Regular, Ruim ou Fechada.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#E8F8F0;">⭐</div>
+        <h3>Avaliações reais</h3>
+        <p>Fotos, comentários e notas de outros boaters que usaram a rampa recentemente.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#E0F7FA;">➕</div>
+        <h3>Cadastre rampas</h3>
+        <p>Não encontrou sua rampa? Cadastre-a em segundos e ajude toda a comunidade.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Status system -->
+  <section class="status-section">
+    <div class="status-inner">
+      <div class="section-eyebrow">Sistema de status</div>
+      <h2 class="section-title">Saiba a condição antes de chegar</h2>
+      <div class="status-grid">
+        <div class="status-chip">
+          <div class="status-dot-row">
+            <div class="status-dot" style="background:#2ECC71;"></div>
+            <div class="status-name">Boa</div>
+          </div>
+          <div class="status-desc">Acessível e em boas condições de uso</div>
+        </div>
+        <div class="status-chip">
+          <div class="status-dot-row">
+            <div class="status-dot" style="background:#F39C12;"></div>
+            <div class="status-name">Regular</div>
+          </div>
+          <div class="status-desc">Acessível com ressalvas ou parcialmente</div>
+        </div>
+        <div class="status-chip">
+          <div class="status-dot-row">
+            <div class="status-dot" style="background:#E74C3C;"></div>
+            <div class="status-name">Ruim</div>
+          </div>
+          <div class="status-desc">Inacessível ou com danos graves</div>
+        </div>
+        <div class="status-chip">
+          <div class="status-dot-row">
+            <div class="status-dot" style="background:#78909C;"></div>
+            <div class="status-name">Fechada</div>
+          </div>
+          <div class="status-desc">Temporariamente fora de operação</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>Pronto para navegar com mais segurança?</h2>
+    <p>Gratuito, sem anúncios, feito pela e para a comunidade náutica brasileira.</p>
+    <div class="hero-actions">
+      <a href="https://play.google.com/store/apps/details?id=com.kaiquezanettin.rampaapp" class="btn-store btn-store-play" style="background:var(--ocean);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3.18 23.65a2 2 0 0 1-.94-1.72V2.07A2 2 0 0 1 3.18.35l12.5 11.65L3.18 23.65z"/>
+          <path d="M16.69 13.65l2.84-2.65 3.2 1.84a1.5 1.5 0 0 1 0 2.62l-3.2 1.84-2.84-2.65z" opacity=".7"/>
+          <path d="M15.68 12.72L4.07 1.1l11.61 6.7 2.68 2.5-2.68 2.42z" opacity=".85"/>
+          <path d="M4.07 22.9l11.61-11.62-2.68 2.42-8.93 9.2z" opacity=".65"/>
+        </svg>
+        Baixar no Google Play
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">Rampa<span>App</span></div>
+    <div class="footer-links">
+      <a href="https://zanettin7-rgb.github.io/rampaapp-site/">Política de Privacidade</a>
+      <a href="mailto:contato@rampaapp.com.br">Contato</a>
+    </div>
+    <p>© 2026 RampaApp · Rampas de barco cooperativas no Brasil</p>
+  </footer>
+
+</div><!-- /screen-landing -->
+
+<script>
+  const SUPABASE_URL = 'https://xamqtmsmceptzkoqtvct.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_M6FV9_jDXmphibxmwpxmfA_K_Sa--Ss';
+
+  // Parse hash params (Supabase puts tokens in the hash)
+  const hash = window.location.hash.slice(1);
+  const params = new URLSearchParams(hash);
+  const type        = params.get('type');
+  const accessToken = params.get('access_token');
+  const refreshToken = params.get('refresh_token');
+
+  function show(id) {
+    ['screen-recovery', 'screen-confirmed', 'screen-landing'].forEach(s => {
+      document.getElementById(s).style.display = 'none';
+    });
+    const el = document.getElementById(id);
+    el.style.display = 'flex';
+  }
+
+  if (type === 'recovery' && accessToken) {
+    show('screen-recovery');
+
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Set the session so the client can update the password
+    client.auth.setSession({ access_token: accessToken, refresh_token: refreshToken || '' });
+
+    document.getElementById('btn-salvar-senha').addEventListener('click', async () => {
+      const nova     = document.getElementById('nova-senha').value.trim();
+      const confirma = document.getElementById('confirmar-senha').value.trim();
+      const msg      = document.getElementById('recovery-msg');
+      const btn      = document.getElementById('btn-salvar-senha');
+
+      msg.style.display = 'none';
+
+      if (nova.length < 6) {
+        msg.className = 'auth-msg err';
+        msg.textContent = 'A senha precisa ter pelo menos 6 caracteres.';
+        msg.style.display = 'block';
+        return;
+      }
+      if (nova !== confirma) {
+        msg.className = 'auth-msg err';
+        msg.textContent = 'As senhas não coincidem.';
+        msg.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Salvando...';
+
+      const { error } = await client.auth.updateUser({ password: nova });
+
+      if (error) {
+        msg.className = 'auth-msg err';
+        msg.textContent = 'Erro: ' + error.message;
+        msg.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Salvar nova senha';
+      } else {
+        msg.className = 'auth-msg ok';
+        msg.textContent = '✓ Senha atualizada! Abra o RampaApp e faça login com a nova senha.';
+        msg.style.display = 'block';
+        btn.textContent = 'Senha salva!';
+      }
+    });
+
+  } else if (type === 'signup' && accessToken) {
+    show('screen-confirmed');
+
+  } else {
+    show('screen-landing');
+  }
+</script>
+
+</body>
+</html>
