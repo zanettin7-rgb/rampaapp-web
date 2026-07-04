@@ -665,12 +665,16 @@
   const SUPABASE_URL = 'https://xamqtmsmceptzkoqtvct.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_M6FV9_jDXmphibxmwpxmfA_K_Sa--Ss';
 
-  // Parse hash params (Supabase puts tokens in the hash)
-  const hash = window.location.hash.slice(1);
-  const params = new URLSearchParams(hash);
-  const type        = params.get('type');
-  const accessToken = params.get('access_token');
-  const refreshToken = params.get('refresh_token');
+  // Supabase envia tokens de duas formas:
+  // - Antiga (hash): #access_token=xxx&type=recovery
+  // - Nova PKCE (query): ?token_hash=xxx&type=recovery
+  const hashParams  = new URLSearchParams(window.location.hash.slice(1));
+  const queryParams = new URLSearchParams(window.location.search);
+
+  const type        = hashParams.get('type')         || queryParams.get('type');
+  const accessToken = hashParams.get('access_token');
+  const refreshToken= hashParams.get('refresh_token');
+  const tokenHash   = queryParams.get('token_hash');
 
   function show(id) {
     ['screen-recovery', 'screen-confirmed', 'screen-landing'].forEach(s => {
@@ -680,13 +684,8 @@
     el.style.display = id === 'screen-landing' ? 'block' : 'flex';
   }
 
-  if (type === 'recovery' && accessToken) {
+  async function setupRecovery(client) {
     show('screen-recovery');
-
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // Set the session so the client can update the password
-    client.auth.setSession({ access_token: accessToken, refresh_token: refreshToken || '' });
 
     document.getElementById('btn-salvar-senha').addEventListener('click', async () => {
       const nova     = document.getElementById('nova-senha').value.trim();
@@ -704,7 +703,7 @@
       }
       if (nova !== confirma) {
         msg.className = 'auth-msg err';
-        msg.textContent = 'As senhas não coincidem.';
+        msg.textContent = 'As senhas nao coincidem.';
         msg.style.display = 'block';
         return;
       }
@@ -722,13 +721,38 @@
         btn.textContent = 'Salvar nova senha';
       } else {
         msg.className = 'auth-msg ok';
-        msg.textContent = '✓ Senha atualizada! Abra o RampaApp e faça login com a nova senha.';
+        msg.textContent = 'Senha atualizada! Abra o RampaApp e faca login com a nova senha.';
         msg.style.display = 'block';
         btn.textContent = 'Senha salva!';
       }
     });
+  }
 
-  } else if (type === 'signup' && accessToken) {
+  if (type === 'recovery') {
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    if (tokenHash) {
+      // Formato PKCE novo — troca token_hash por sessao
+      client.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' }).then(({ error }) => {
+        if (error) {
+          show('screen-landing');
+        } else {
+          setupRecovery(client);
+        }
+      });
+    } else if (accessToken) {
+      // Formato antigo — usa access_token direto
+      client.auth.setSession({ access_token: accessToken, refresh_token: refreshToken || '' });
+      setupRecovery(client);
+    } else {
+      show('screen-landing');
+    }
+
+  } else if (type === 'signup') {
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    if (tokenHash) {
+      client.auth.verifyOtp({ token_hash: tokenHash, type: 'signup' });
+    }
     show('screen-confirmed');
 
   } else {
