@@ -696,7 +696,7 @@
       document.getElementById(s).style.display = 'none';
     });
     const el = document.getElementById(id);
-    el.style.display = 'flex';
+    el.style.display = id === 'screen-landing' ? 'block' : 'flex';
   }
 
   if (type === 'recovery' && accessToken) {
