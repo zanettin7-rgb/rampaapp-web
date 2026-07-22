@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Política de Privacidade — RampaApp</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ocean:      #005F8E;
+      --ocean-dark: #003F5E;
+      --sunset:     #FF8000;
+      --ground:     #F0F7FC;
+      --ink:        #1A2E3B;
+      --ink-mid:    #546E7A;
+      --ink-muted:  #90A4AE;
+      --border:     #DCE8F0;
+      --white:      #ffffff;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--ground);
+      color: var(--ink);
+      line-height: 1.7;
+    }
+
+    header {
+      background: var(--ocean-dark, #003F5E);
+      color: var(--white);
+      padding: 48px 24px 40px;
+      text-align: center;
+    }
+
+    header img {
+      display: block;
+      width: 88px;
+      height: 88px;
+      object-fit: cover;
+      border-radius: 20px;
+      margin: 0 auto 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    header .subtitle {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 28px 24px 0;
+      color: var(--ocean);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 12px 24px 64px;
+    }
+
+    .intro {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0 28px;
+      border-left: 4px solid var(--ocean);
+      font-size: 0.95rem;
+      color: var(--ink-mid);
+    }
+
+    section {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0,63,94,0.06);
+    }
+
+    section h2 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--ocean);
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    section h2::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 16px;
+      background: var(--sunset);
+      border-radius: 2px;
+    }
+
+    section p { font-size: 0.95rem; color: var(--ink-mid); margin-bottom: 10px; }
+    section p:last-child { margin-bottom: 0; }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    ul li {
+      font-size: 0.95rem;
+      color: var(--ink-mid);
+      padding-left: 18px;
+      position: relative;
+    }
+
+    ul li::before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: var(--sunset);
+      font-weight: 700;
+    }
+
+    .highlight {
+      background: #FFF8F0;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    a { color: var(--ocean); }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      border-top: 1px solid var(--border);
+    }
+
+    footer a { color: var(--ocean); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="logo.png" alt="RampaApp">
+    <h1>Política de Privacidade</h1>
+    <p class="subtitle">Última atualização: junho de 2026</p>
+  </header>
+
+  <a href="/" class="back-link">← Voltar ao site</a>
+
+  <main>
+    <div class="intro">
+      Esta Política de Privacidade descreve como o <strong>RampaApp</strong> coleta, utiliza e protege as informações dos usuários, em conformidade com a <strong>Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018)</strong>.
+    </div>
+
+    <section id="quem-somos">
+      <h2>Quem somos</h2>
+      <p>O RampaApp é um aplicativo colaborativo de rampas de barco no Brasil, desenvolvido e operado por <strong>SAAZ.APP</strong> (pessoa física), doravante denominado "nós" ou "operador".</p>
+    </section>
+
+    <section id="dados-coletados">
+      <h2>Dados que coletamos</h2>
+      <p>Coletamos apenas os dados necessários para o funcionamento do aplicativo:</p>
+      <ul>
+        <li><strong>Dados de cadastro:</strong> endereço de e-mail e senha (armazenada de forma criptografada)</li>
+        <li><strong>Dados de perfil:</strong> nome, modelo e tamanho do barco (opcionais, informados pelo próprio usuário)</li>
+        <li><strong>Localização:</strong> coordenadas GPS para exibir rampas próximas e cadastrar novas rampas. Coletada apenas com sua permissão explícita</li>
+        <li><strong>Fotos:</strong> imagens enviadas voluntariamente pelo usuário para ilustrar rampas</li>
+        <li><strong>Conteúdo gerado:</strong> avaliações, comentários, votos de condição e reportes de rampas</li>
+        <li><strong>Dados de uso:</strong> histórico de visitas a rampas e favoritos</li>
+      </ul>
+    </section>
+
+    <section id="como-usamos">
+      <h2>Como usamos seus dados</h2>
+      <p>Seus dados são utilizados exclusivamente para:</p>
+      <ul>
+        <li>Criar e gerenciar sua conta no aplicativo</li>
+        <li>Exibir rampas próximas à sua localização</li>
+        <li>Permitir o cadastro e avaliação de rampas</li>
+        <li>Exibir informações de contexto nos votos de condição (ex: modelo do barco)</li>
+        <li>Notificá-lo sobre mudanças em rampas que você favoritou</li>
+        <li>Melhorar continuamente o aplicativo</li>
+      </ul>
+      <div class="highlight">🔒 Não vendemos, alugamos ou compartilhamos seus dados pessoais com terceiros para fins comerciais.</div>
+    </section>
+
+    <section id="compartilhamento">
+      <h2>Compartilhamento de dados</h2>
+      <p>Seus dados podem ser compartilhados apenas com:</p>
+      <ul>
+        <li><strong>Supabase</strong> — plataforma de banco de dados e autenticação onde os dados são armazenados com segurança</li>
+        <li><strong>Google Maps</strong> — para exibição do mapa e navegação até as rampas</li>
+        <li><strong>Expo / EAS</strong> — para distribuição e atualização do aplicativo</li>
+      </ul>
+      <p>Todos os prestadores de serviço listados possuem suas próprias políticas de privacidade e adotam medidas de segurança adequadas.</p>
+    </section>
+
+    <section id="armazenamento">
+      <h2>Armazenamento e segurança</h2>
+      <ul>
+        <li>Comunicação criptografada via HTTPS/TLS</li>
+        <li>Senhas armazenadas com hash seguro (nunca em texto puro)</li>
+        <li>Controle de acesso por Row Level Security (RLS) — cada usuário acessa apenas seus próprios dados privados</li>
+        <li>Backups automáticos</li>
+      </ul>
+    </section>
+
+    <section id="direitos-lgpd">
+      <h2>Seus direitos (LGPD)</h2>
+      <p>Conforme a LGPD, você tem direito a:</p>
+      <ul>
+        <li><strong>Acesso:</strong> solicitar uma cópia dos seus dados pessoais</li>
+        <li><strong>Correção:</strong> corrigir dados incompletos ou desatualizados</li>
+        <li><strong>Exclusão:</strong> solicitar a exclusão de todos os seus dados e conta</li>
+        <li><strong>Portabilidade:</strong> receber seus dados em formato estruturado</li>
+        <li><strong>Revogação:</strong> revogar o consentimento a qualquer momento</li>
+        <li><strong>Oposição:</strong> opor-se ao tratamento de dados em determinadas situações</li>
+      </ul>
+      <p>Para exercer qualquer um desses direitos, entre em contato pelo e-mail abaixo. Respondemos em até <strong>15 dias úteis</strong>.</p>
+    </section>
+
+    <section id="retencao">
+      <h2>Retenção de dados</h2>
+      <p>Seus dados são mantidos enquanto sua conta estiver ativa. Após a exclusão da conta, os dados pessoais são removidos em até 30 dias, exceto quando houver obrigação legal de retenção.</p>
+      <p>Conteúdo público gerado (avaliações de rampas, fotos) pode ser anonimizado em vez de excluído, preservando a utilidade coletiva do aplicativo.</p>
+    </section>
+
+    <section id="menores">
+      <h2>Menores de idade</h2>
+      <p>O RampaApp é destinado a usuários com <strong>18 anos ou mais</strong>. Não coletamos intencionalmente dados de menores de idade. Caso identifiquemos um cadastro de menor, a conta será removida imediatamente.</p>
+    </section>
+
+    <section id="alteracoes">
+      <h2>Alterações nesta política</h2>
+      <p>Esta política pode ser atualizada periodicamente. Quando houver mudanças relevantes, notificaremos os usuários pelo aplicativo. O uso continuado do RampaApp após as alterações implica aceitação da nova versão.</p>
+    </section>
+
+    <section id="contato">
+      <h2>Contato</h2>
+      <p>Dúvidas, solicitações ou reclamações relacionadas à privacidade:</p>
+      <p><a href="mailto:rampa.app.br@gmail.com">rampa.app.br@gmail.com</a></p>
+      <p>Responsável: SAAZ.APP</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 RampaApp — Todos os direitos reservados · <a href="/">rampaapp.com.br</a> · Desenvolvido no Brasil 🇧🇷</p>
+  </footer>
+
+</body>
+</html>
