@@ -446,6 +446,87 @@
       margin-bottom: 32px;
     }
 
+    /* ── REGIÕES ── */
+    .regioes-section {
+      padding: 80px 24px;
+      background: var(--white);
+      text-align: center;
+    }
+
+    .section-sub {
+      font-size: 16px;
+      color: var(--ink-mid);
+      max-width: 560px;
+      margin: 0 auto 48px;
+      line-height: 1.6;
+    }
+
+    .regioes-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 32px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .regiao-grupo {
+      text-align: left;
+      min-width: 140px;
+    }
+
+    .regiao-titulo {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: 10px;
+    }
+
+    .regiao-estados {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .estado-chip {
+      display: inline-block;
+      padding: 7px 14px;
+      border-radius: 8px;
+      background: var(--ground);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ocean);
+      text-decoration: none;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .estado-chip:hover {
+      background: var(--ocean);
+      border-color: var(--ocean);
+      color: #fff;
+    }
+
+    .btn-regioes {
+      display: inline-block;
+      padding: 14px 32px;
+      border-radius: 10px;
+      background: transparent;
+      border: 2px solid var(--ocean);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ocean);
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-regioes:hover {
+      background: var(--ocean);
+      color: #fff;
+    }
+
     /* ── FOOTER ── */
     footer {
       background: var(--ocean-dark);
@@ -634,6 +715,70 @@
     </div>
   </section>
 
+  <!-- Rampas por Região -->
+  <section class="regioes-section">
+    <div class="section-eyebrow">Explore o Brasil</div>
+    <h2 class="section-title">Rampas de barco por estado</h2>
+    <p class="section-sub">Encontre rampas próximas a você. Selecione seu estado e descubra os melhores locais para lançar sua embarcação.</p>
+
+    <div class="regioes-wrapper">
+      <div class="regiao-grupo">
+        <div class="regiao-titulo">Sul</div>
+        <div class="regiao-estados">
+          <a href="/rampas-pr.html" class="estado-chip">PR</a>
+          <a href="/rampas-sc.html" class="estado-chip">SC</a>
+          <a href="/rampas-rs.html" class="estado-chip">RS</a>
+        </div>
+      </div>
+      <div class="regiao-grupo">
+        <div class="regiao-titulo">Sudeste</div>
+        <div class="regiao-estados">
+          <a href="/rampas-sp.html" class="estado-chip">SP</a>
+          <a href="/rampas-rj.html" class="estado-chip">RJ</a>
+          <a href="/rampas-mg.html" class="estado-chip">MG</a>
+          <a href="/rampas-es.html" class="estado-chip">ES</a>
+        </div>
+      </div>
+      <div class="regiao-grupo">
+        <div class="regiao-titulo">Nordeste</div>
+        <div class="regiao-estados">
+          <a href="/rampas-ba.html" class="estado-chip">BA</a>
+          <a href="/rampas-pe.html" class="estado-chip">PE</a>
+          <a href="/rampas-ce.html" class="estado-chip">CE</a>
+          <a href="/rampas-ma.html" class="estado-chip">MA</a>
+          <a href="/rampas-rn.html" class="estado-chip">RN</a>
+          <a href="/rampas-pb.html" class="estado-chip">PB</a>
+          <a href="/rampas-al.html" class="estado-chip">AL</a>
+          <a href="/rampas-se.html" class="estado-chip">SE</a>
+          <a href="/rampas-pi.html" class="estado-chip">PI</a>
+        </div>
+      </div>
+      <div class="regiao-grupo">
+        <div class="regiao-titulo">Norte</div>
+        <div class="regiao-estados">
+          <a href="/rampas-am.html" class="estado-chip">AM</a>
+          <a href="/rampas-pa.html" class="estado-chip">PA</a>
+          <a href="/rampas-ap.html" class="estado-chip">AP</a>
+          <a href="/rampas-ro.html" class="estado-chip">RO</a>
+          <a href="/rampas-to.html" class="estado-chip">TO</a>
+        </div>
+      </div>
+      <div class="regiao-grupo">
+        <div class="regiao-titulo">Centro-Oeste</div>
+        <div class="regiao-estados">
+          <a href="/rampas-go.html" class="estado-chip">GO</a>
+          <a href="/rampas-mt.html" class="estado-chip">MT</a>
+          <a href="/rampas-ms.html" class="estado-chip">MS</a>
+          <a href="/rampas-df.html" class="estado-chip">DF</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top: 32px;">
+      <a href="/rampas.html" class="btn-regioes">Ver todas as regiões</a>
+    </div>
+  </section>
+
   <!-- CTA -->
   <section class="cta-section">
     <h2>Pronto para navegar com mais segurança?</h2>
@@ -655,7 +800,7 @@
   <footer>
     <div class="footer-logo">Rampa<span>App</span></div>
     <div class="footer-links">
-      <a href="https://zanettin7-rgb.github.io/rampaapp-site/">Política de Privacidade</a>
+      <a href="/privacidade.html">Política de Privacidade</a>
       <a href="mailto:contato@rampaapp.com.br">Contato</a>
     </div>
     <p>© 2026 RampaApp · Rampas de barco cooperativas no Brasil</p>
