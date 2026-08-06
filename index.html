@@ -398,17 +398,32 @@
     }
 
     .status-inner {
-      max-width: 960px;
+      max-width: 1060px;
       margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 56px;
+    }
+
+    .status-heading {
+      flex: 0 0 260px;
     }
 
     .status-section .section-eyebrow { color: rgba(255,255,255,0.55); }
-    .status-section .section-title   { color: #fff; margin-bottom: 40px; }
+    .status-section .section-title   { color: #fff; margin: 8px 0 0; text-align: left; }
 
     .status-grid {
+      flex: 1;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 12px;
+    }
+
+    @media (max-width: 680px) {
+      .status-inner { flex-direction: column; gap: 32px; }
+      .status-heading { flex: none; }
+      .status-section .section-title { text-align: center; }
+      .status-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     .status-chip {
@@ -681,8 +696,10 @@
   <!-- Status system -->
   <section class="status-section">
     <div class="status-inner">
-      <div class="section-eyebrow">Sistema de status</div>
-      <h2 class="section-title">Saiba a condição antes de chegar</h2>
+      <div class="status-heading">
+        <div class="section-eyebrow">Sistema de status</div>
+        <h2 class="section-title">Saiba a condição antes de chegar</h2>
+      </div>
       <div class="status-grid">
         <div class="status-chip">
           <div class="status-dot-row">
