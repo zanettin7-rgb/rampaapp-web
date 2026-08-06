@@ -410,7 +410,7 @@
     }
 
     .status-section .section-eyebrow { color: rgba(255,255,255,0.55); }
-    .status-section .section-title   { color: #fff; margin: 8px 0 0; text-align: left; }
+    .status-section .section-title   { color: #fff; margin: 8px 0 0; text-align: left; max-width: none; }
 
     .status-grid {
       flex: 1;
@@ -479,16 +479,21 @@
 
     .regioes-wrapper {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 32px;
-      max-width: 860px;
+      flex-direction: column;
+      gap: 28px;
+      max-width: 960px;
       margin: 0 auto;
+    }
+
+    .regioes-linha {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
     }
 
     .regiao-grupo {
       text-align: left;
-      min-width: 140px;
     }
 
     .regiao-titulo {
@@ -740,54 +745,60 @@
     <p class="section-sub">Encontre rampas próximas a você. Selecione seu estado e descubra os melhores locais para lançar sua embarcação.</p>
 
     <div class="regioes-wrapper">
-      <div class="regiao-grupo">
-        <div class="regiao-titulo">Sul</div>
-        <div class="regiao-estados">
-          <a href="/rampas-pr.html" class="estado-chip">PR</a>
-          <a href="/rampas-sc.html" class="estado-chip">SC</a>
-          <a href="/rampas-rs.html" class="estado-chip">RS</a>
+      <!-- Linha 1: Sul + Sudeste + Centro-Oeste -->
+      <div class="regioes-linha">
+        <div class="regiao-grupo">
+          <div class="regiao-titulo">Sul</div>
+          <div class="regiao-estados">
+            <a href="/rampas-pr.html" class="estado-chip">PR</a>
+            <a href="/rampas-sc.html" class="estado-chip">SC</a>
+            <a href="/rampas-rs.html" class="estado-chip">RS</a>
+          </div>
+        </div>
+        <div class="regiao-grupo">
+          <div class="regiao-titulo">Sudeste</div>
+          <div class="regiao-estados">
+            <a href="/rampas-sp.html" class="estado-chip">SP</a>
+            <a href="/rampas-rj.html" class="estado-chip">RJ</a>
+            <a href="/rampas-mg.html" class="estado-chip">MG</a>
+            <a href="/rampas-es.html" class="estado-chip">ES</a>
+          </div>
+        </div>
+        <div class="regiao-grupo">
+          <div class="regiao-titulo">Centro-Oeste</div>
+          <div class="regiao-estados">
+            <a href="/rampas-go.html" class="estado-chip">GO</a>
+            <a href="/rampas-mt.html" class="estado-chip">MT</a>
+            <a href="/rampas-ms.html" class="estado-chip">MS</a>
+            <a href="/rampas-df.html" class="estado-chip">DF</a>
+          </div>
         </div>
       </div>
-      <div class="regiao-grupo">
-        <div class="regiao-titulo">Sudeste</div>
-        <div class="regiao-estados">
-          <a href="/rampas-sp.html" class="estado-chip">SP</a>
-          <a href="/rampas-rj.html" class="estado-chip">RJ</a>
-          <a href="/rampas-mg.html" class="estado-chip">MG</a>
-          <a href="/rampas-es.html" class="estado-chip">ES</a>
+      <!-- Linha 2: Nordeste + Norte -->
+      <div class="regioes-linha">
+        <div class="regiao-grupo">
+          <div class="regiao-titulo">Nordeste</div>
+          <div class="regiao-estados">
+            <a href="/rampas-ba.html" class="estado-chip">BA</a>
+            <a href="/rampas-pe.html" class="estado-chip">PE</a>
+            <a href="/rampas-ce.html" class="estado-chip">CE</a>
+            <a href="/rampas-ma.html" class="estado-chip">MA</a>
+            <a href="/rampas-rn.html" class="estado-chip">RN</a>
+            <a href="/rampas-pb.html" class="estado-chip">PB</a>
+            <a href="/rampas-al.html" class="estado-chip">AL</a>
+            <a href="/rampas-se.html" class="estado-chip">SE</a>
+            <a href="/rampas-pi.html" class="estado-chip">PI</a>
+          </div>
         </div>
-      </div>
-      <div class="regiao-grupo">
-        <div class="regiao-titulo">Nordeste</div>
-        <div class="regiao-estados">
-          <a href="/rampas-ba.html" class="estado-chip">BA</a>
-          <a href="/rampas-pe.html" class="estado-chip">PE</a>
-          <a href="/rampas-ce.html" class="estado-chip">CE</a>
-          <a href="/rampas-ma.html" class="estado-chip">MA</a>
-          <a href="/rampas-rn.html" class="estado-chip">RN</a>
-          <a href="/rampas-pb.html" class="estado-chip">PB</a>
-          <a href="/rampas-al.html" class="estado-chip">AL</a>
-          <a href="/rampas-se.html" class="estado-chip">SE</a>
-          <a href="/rampas-pi.html" class="estado-chip">PI</a>
-        </div>
-      </div>
-      <div class="regiao-grupo">
-        <div class="regiao-titulo">Norte</div>
-        <div class="regiao-estados">
-          <a href="/rampas-am.html" class="estado-chip">AM</a>
-          <a href="/rampas-pa.html" class="estado-chip">PA</a>
-          <a href="/rampas-ap.html" class="estado-chip">AP</a>
-          <a href="/rampas-ro.html" class="estado-chip">RO</a>
-          <a href="/rampas-to.html" class="estado-chip">TO</a>
-        </div>
-      </div>
-      <div class="regiao-grupo">
-        <div class="regiao-titulo">Centro-Oeste</div>
-        <div class="regiao-estados">
-          <a href="/rampas-go.html" class="estado-chip">GO</a>
-          <a href="/rampas-mt.html" class="estado-chip">MT</a>
-          <a href="/rampas-ms.html" class="estado-chip">MS</a>
-          <a href="/rampas-df.html" class="estado-chip">DF</a>
+        <div class="regiao-grupo">
+          <div class="regiao-titulo">Norte</div>
+          <div class="regiao-estados">
+            <a href="/rampas-am.html" class="estado-chip">AM</a>
+            <a href="/rampas-pa.html" class="estado-chip">PA</a>
+            <a href="/rampas-ap.html" class="estado-chip">AP</a>
+            <a href="/rampas-ro.html" class="estado-chip">RO</a>
+            <a href="/rampas-to.html" class="estado-chip">TO</a>
+          </div>
         </div>
       </div>
     </div>
