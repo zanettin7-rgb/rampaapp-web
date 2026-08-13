@@ -12,6 +12,8 @@
   <meta property="og:description" content="Encontre rampas de barco em todo o Brasil.">
   <meta property="og:image" content="https://rampaapp.com.br/og.png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -445,6 +447,92 @@
     .status-name { font-size: 13px; font-weight: 700; color: #fff; }
     .status-desc { font-size: 12px; color: rgba(255,255,255,0.60); line-height: 1.4; }
 
+    /* ── MAPA PREVIEW ── */
+    .mapa-section {
+      padding: 80px 24px;
+      background: var(--ocean-dark);
+      text-align: center;
+    }
+    .mapa-section .section-title { color: #fff; }
+    .mapa-section .section-sub { color: rgba(255,255,255,0.65); max-width: 520px; margin: 0 auto 48px; font-size: 17px; }
+
+    .phone-mockup {
+      position: relative;
+      width: 300px;
+      height: 600px;
+      margin: 0 auto;
+      background: #0a0a0a;
+      border-radius: 44px;
+      padding: 14px;
+      box-shadow: 0 0 0 2px #333, 0 32px 80px rgba(0,0,0,0.6), inset 0 0 0 1px #222;
+    }
+    .phone-notch {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90px;
+      height: 26px;
+      background: #0a0a0a;
+      border-radius: 0 0 16px 16px;
+      z-index: 10;
+    }
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 32px;
+      overflow: hidden;
+      background: #1a2e3b;
+      position: relative;
+    }
+    .phone-topbar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 52px;
+      background: var(--ocean-dark);
+      z-index: 20;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 16px 10px;
+      gap: 8px;
+    }
+    .phone-topbar-logo {
+      font-size: 15px;
+      font-weight: 800;
+      color: white;
+    }
+    .phone-topbar-logo span { color: var(--sunset); }
+    #phone-map {
+      position: absolute;
+      top: 52px; left: 0; right: 0; bottom: 0;
+    }
+    .phone-cta-pill {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--sunset);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 50px;
+      z-index: 30;
+      white-space: nowrap;
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(255,128,0,0.5);
+    }
+    .mapa-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+      font-size: 13px;
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
     /* ── CTA SECTION ── */
     .cta-section {
       padding: 80px 24px;
@@ -819,6 +907,25 @@
     </div>
   </section>
 
+  <!-- MAPA PREVIEW -->
+  <section class="mapa-section">
+    <span class="mapa-badge">Dados em tempo real</span>
+    <h2 class="section-title">Veja as rampas no mapa</h2>
+    <p class="section-sub">Explore as rampas cadastradas pela comunidade. Para ver avaliações, fotos e condição atual, baixe o app gratuitamente.</p>
+    <div class="phone-mockup">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-topbar">
+          <span class="phone-topbar-logo">Rampa<span>App</span></span>
+        </div>
+        <div id="phone-map"></div>
+        <a class="phone-cta-pill" href="https://play.google.com/store/apps/details?id=com.kaiquezanettin.rampaapp">
+          Ver detalhes → Baixar app
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA -->
   <section class="cta-section">
     <h2>Pronto para navegar com mais segurança?</h2>
@@ -849,6 +956,60 @@
 </div><!-- /screen-landing -->
 
 <script>
+  // ── MAPA PREVIEW ──
+  (function() {
+    const SUPA_URL = 'https://xamqtmsmceptzkoqtvct.supabase.co';
+    const SUPA_KEY = 'sb_publishable_M6FV9_jDXmphibxmwpxmfA_K_Sa--Ss';
+    const PLAY_URL = 'https://play.google.com/store/apps/details?id=com.kaiquezanettin.rampaapp';
+
+    const map = L.map('phone-map', {
+      zoomControl: false,
+      attributionControl: false,
+    }).setView([-15, -50], 4);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 18,
+    }).addTo(map);
+
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    const icon = L.divIcon({
+      className: '',
+      html: '<div style="width:12px;height:12px;background:#FF8000;border:2px solid white;border-radius:50%;box-shadow:0 0 6px rgba(255,128,0,0.7)"></div>',
+      iconSize: [12, 12],
+      iconAnchor: [6, 6],
+    });
+
+    fetch(`${SUPA_URL}/rest/v1/rampas?select=id,nome,latitude,longitude,condicao&limit=200`, {
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': `Bearer ${SUPA_KEY}`,
+      }
+    })
+    .then(r => r.json())
+    .then(rampas => {
+      if (!Array.isArray(rampas)) return;
+      rampas.forEach(r => {
+        const lat = parseFloat(r.latitude);
+        const lng = parseFloat(r.longitude);
+        if (isNaN(lat) || isNaN(lng)) return;
+        const condicao = r.condicao || 'Desconhecida';
+        L.marker([lat, lng], { icon })
+          .addTo(map)
+          .bindPopup(`
+            <div style="font-family:sans-serif;font-size:13px;min-width:140px">
+              <strong style="color:#003F5E">${r.nome || 'Rampa'}</strong><br>
+              <span style="color:#546E7A">Condição: ${condicao}</span><br>
+              <a href="${PLAY_URL}" style="color:#FF8000;font-weight:700;text-decoration:none">
+                Ver no app →
+              </a>
+            </div>
+          `);
+      });
+    })
+    .catch(() => {});
+  })();
+
   const SUPABASE_URL = 'https://xamqtmsmceptzkoqtvct.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_M6FV9_jDXmphibxmwpxmfA_K_Sa--Ss';
 
