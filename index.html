@@ -967,7 +967,7 @@
       attributionControl: false,
     }).setView([-15, -50], 4);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       maxZoom: 18,
     }).addTo(map);
 
@@ -980,7 +980,7 @@
       iconAnchor: [6, 6],
     });
 
-    fetch(`${SUPA_URL}/rest/v1/rampas?select=id,nome,latitude,longitude,condicao&limit=200`, {
+    fetch(`${SUPA_URL}/rest/v1/rampas?select=id,nome,latitude,longitude,estado&limit=200`, {
       headers: {
         'apikey': SUPA_KEY,
         'Authorization': `Bearer ${SUPA_KEY}`,
@@ -993,7 +993,7 @@
         const lat = parseFloat(r.latitude);
         const lng = parseFloat(r.longitude);
         if (isNaN(lat) || isNaN(lng)) return;
-        const condicao = r.condicao || 'Desconhecida';
+        const condicao = r.estado || 'Desconhecida';
         L.marker([lat, lng], { icon })
           .addTo(map)
           .bindPopup(`
