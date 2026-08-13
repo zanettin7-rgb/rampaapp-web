@@ -1094,9 +1094,9 @@
     const hint = document.getElementById('map-hint-text');
     function hideHint() {
       if (hint) hint.classList.add('hidden');
-      map.off('click touchstart movestart zoomstart', hideHint);
+      map.off('click touchstart', hideHint);
     }
-    map.on('click touchstart movestart zoomstart', hideHint);
+    setTimeout(() => map.on('click touchstart', hideHint), 2000);
     })
     .catch(() => {});
   })();
