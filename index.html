@@ -1024,7 +1024,8 @@
             </div>
           `);
       });
-      if (bounds.length > 0) map.fitBounds(bounds, { padding: [20, 20], maxZoom: 10 });
+      const brBounds = bounds.filter(([lt, lg]) => lt > -34 && lt < 6 && lg > -74 && lg < -34);
+      if (brBounds.length > 0) map.fitBounds(brBounds, { padding: [20, 20], maxZoom: 10 });
     })
     .catch(() => {});
   })();
