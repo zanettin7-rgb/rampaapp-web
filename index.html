@@ -559,13 +559,17 @@
       text-align: left;
       z-index: 40;
       pointer-events: none;
+      opacity: 0;
+    }
+
+    .map-overlay-hint.hint-visible {
       animation: hintLife 8s ease-in-out forwards;
     }
 
     @keyframes hintLife {
       0%   { opacity: 0; }
-      10%  { opacity: 1; }
-      70%  { opacity: 1; }
+      15%  { opacity: 1; }
+      75%  { opacity: 1; }
       100% { opacity: 0; }
     }
 
@@ -1083,6 +1087,13 @@
       });
       const brBounds = bounds.filter(([lt, lg]) => lt > -34 && lt < 6 && lg > -74 && lg < -34);
       if (brBounds.length > 0) map.fitBounds(brBounds, { padding: [20, 20], maxZoom: 10 });
+
+    map.once('moveend', function() {
+      setTimeout(function() {
+        var hint = document.querySelector('.map-overlay-hint');
+        if (hint) hint.classList.add('hint-visible');
+      }, 500);
+    });
 
 
     })
