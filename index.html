@@ -12,6 +12,7 @@
   <meta property="og:description" content="Encontre rampas de barco em todo o Brasil.">
   <meta property="og:image" content="https://rampaapp.com.br/og.png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
@@ -562,18 +563,7 @@
       opacity: 0;
     }
 
-    .map-overlay-hint.hint-visible {
-      animation: hintLife 8s ease-in-out forwards;
-    }
-
-    @keyframes hintLife {
-      0%   { opacity: 0; }
-      15%  { opacity: 1; }
-      75%  { opacity: 1; }
-      100% { opacity: 0; }
-    }
-
-    .phone-cta-pill {
+.phone-cta-pill {
       position: absolute;
       bottom: 20px;
       left: 50%;
@@ -1091,8 +1081,26 @@
     map.once('moveend', function() {
       setTimeout(function() {
         var hint = document.querySelector('.map-overlay-hint');
-        if (hint) hint.classList.add('hint-visible');
-      }, 500);
+        if (!hint) return;
+        var pulse;
+        gsap.fromTo(hint,
+          { opacity: 0, y: -6 },
+          {
+            opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
+            onComplete: function() {
+              pulse = gsap.to(hint, { opacity: 0.3, duration: 1.4, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+              gsap.to(hint, { opacity: 0, duration: 0.5, delay: 10,
+                onStart: function() { if (pulse) pulse.kill(); }
+              });
+            }
+          }
+        );
+        var mapEl = document.getElementById('phone-map');
+        if (mapEl) {
+          mapEl.addEventListener('mousedown',  function() { gsap.to(hint, { opacity: 0, duration: 0.3 }); if (pulse) pulse.kill(); }, { once: true });
+          mapEl.addEventListener('touchstart', function() { gsap.to(hint, { opacity: 0, duration: 0.3 }); if (pulse) pulse.kill(); }, { once: true, passive: true });
+        }
+      }, 800);
     });
 
 
