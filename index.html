@@ -190,16 +190,22 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 60px 48px 60px 60px;
+      align-items: center;
+      padding: 60px 48px;
       text-align: left;
     }
 
+    .hero-left-inner {
+      max-width: 480px;
+      width: 100%;
+    }
+
     .hero-right {
-      flex: 0 0 420px;
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(160deg, #003050 0%, #001f38 100%);
+      background: var(--ocean-dark);
       padding: 40px 32px;
     }
 
@@ -768,6 +774,7 @@
   <!-- Hero -->
   <section class="hero">
     <div class="hero-left">
+      <div class="hero-left-inner">
       <img src="logo.png" alt="RampaApp" style="display:block;width:80px;height:80px;object-fit:cover;margin:0 0 20px;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,0.25);">
       <div class="hero-eyebrow">Cooperativo · Gratuito · Feito pela comunidade</div>
       <h1>Encontre rampas de barco em todo o <em>Brasil</em></h1>
@@ -785,6 +792,7 @@
         <a href="#como-funciona" class="btn-store btn-store-ghost">
           Como funciona ↓
         </a>
+      </div>
       </div>
     </div>
     <div class="hero-right">
