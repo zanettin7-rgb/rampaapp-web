@@ -185,28 +185,38 @@
       min-height: 100vh;
     }
 
-    .hero-left {
+    .hero-col-logo {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 32px;
+    }
+
+    .hero-col-text {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
-      padding: 60px 48px;
+      padding: 60px 32px;
       text-align: left;
     }
 
-    .hero-left-inner {
-      max-width: 480px;
-      width: 100%;
-    }
-
-    .hero-right {
+    .hero-col-map {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--ocean-dark);
       padding: 40px 32px;
+    }
+
+    @media (max-width: 900px) {
+      .hero { flex-direction: column; min-height: auto; }
+      .hero-col-logo { padding: 48px 24px 0; }
+      .hero-col-text { padding: 24px 24px; text-align: center; }
+      .hero-col-text .hero-actions { justify-content: center; }
+      .hero-col-text .hero-sub { margin: 0 auto 36px; }
+      .hero-col-map { padding: 0 24px 48px; }
     }
 
     .hero-eyebrow {
@@ -250,13 +260,6 @@
       margin-bottom: 0;
     }
 
-    @media (max-width: 860px) {
-      .hero { flex-direction: column; min-height: auto; }
-      .hero-left { padding: 48px 24px 32px; text-align: center; }
-      .hero-left .hero-sub { margin: 0 auto 36px; }
-      .hero-left .hero-actions { justify-content: center; }
-      .hero-right { flex: none; padding: 0 24px 48px; background: var(--ocean-dark); }
-    }
 
     .btn-store {
       display: inline-flex;
@@ -773,9 +776,10 @@
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-left">
-      <div class="hero-left-inner">
-      <img src="logo.png" alt="RampaApp" style="display:block;width:80px;height:80px;object-fit:cover;margin:0 0 20px;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,0.25);">
+    <div class="hero-col-logo">
+      <img src="logo.png" alt="RampaApp" style="display:block;width:160px;height:160px;object-fit:cover;border-radius:34px;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+    </div>
+    <div class="hero-col-text">
       <div class="hero-eyebrow">Cooperativo · Gratuito · Feito pela comunidade</div>
       <h1>Encontre rampas de barco em todo o <em>Brasil</em></h1>
       <p class="hero-sub">Mapa colaborativo atualizado por quem usa. Cadastre, avalie e ajude outros boaters a lançar sem surpresas.</p>
@@ -793,9 +797,8 @@
           Como funciona ↓
         </a>
       </div>
-      </div>
     </div>
-    <div class="hero-right">
+    <div class="hero-col-map">
       <div class="phone-mockup">
         <div class="phone-notch"></div>
         <div class="phone-screen">
