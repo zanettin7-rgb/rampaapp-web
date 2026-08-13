@@ -1091,7 +1091,7 @@
               gsap.set(hint, { backgroundColor: '#F0F7FC' });
               pulse = gsap.fromTo(hint,
                 { backgroundColor: '#F0F7FC' },
-                { backgroundColor: '#ffffff', duration: 0.35, yoyo: true, repeat: -1, ease: 'sine.inOut' }
+                { backgroundColor: '#ffffff', duration: 0.1, yoyo: true, repeat: -1, ease: 'none' }
               );
               gsap.to(hint, { opacity: 0, duration: 0.5, delay: 10,
                 onStart: function() { if (pulse) pulse.kill(); }
