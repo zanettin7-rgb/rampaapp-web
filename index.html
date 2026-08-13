@@ -542,6 +542,62 @@
       position: absolute;
       top: 52px; left: 0; right: 0; bottom: 0;
     }
+    /* ── ANIMAÇÃO MAPA HINT ── */
+    .map-hint {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      pointer-events: none;
+      animation: hintFadeOut 0.6s ease-in 4s forwards;
+    }
+
+    @keyframes hintFadeOut {
+      to { opacity: 0; }
+    }
+
+    .map-hint-ring {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.9);
+      animation: ringPulse 1.2s ease-out infinite;
+    }
+
+    @keyframes ringPulse {
+      0%   { transform: scale(0.7); opacity: 1; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+
+    .map-hint-finger {
+      font-size: 28px;
+      animation: fingerPinch 1.4s ease-in-out infinite;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+    }
+
+    @keyframes fingerPinch {
+      0%   { transform: scale(1);    }
+      40%  { transform: scale(0.72); }
+      70%  { transform: scale(1.1);  }
+      100% { transform: scale(1);    }
+    }
+
+    .map-hint-label {
+      background: rgba(0,0,0,0.62);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+      letter-spacing: 0.5px;
+    }
+
     .phone-cta-pill {
       position: absolute;
       bottom: 20px;
@@ -806,6 +862,11 @@
             <span class="phone-topbar-logo">Rampa<span>App</span></span>
           </div>
           <div id="phone-map"></div>
+          <div class="map-hint">
+            <div class="map-hint-ring"></div>
+            <div class="map-hint-finger">🤌</div>
+            <div class="map-hint-label">Explore o mapa</div>
+          </div>
           <a class="phone-cta-pill" href="https://play.google.com/store/apps/details?id=com.kaiquezanettin.rampaapp">
             Ver detalhes → Baixar app
           </a>
