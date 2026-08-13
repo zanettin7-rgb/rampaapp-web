@@ -549,17 +549,31 @@
     }
 
     .map-hint-text {
-      max-width: 120px;
+      position: absolute;
+      top: 60px;
+      right: 8px;
+      max-width: 110px;
+      background: rgba(0,0,0,0.55);
       color: var(--sunset);
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 700;
       line-height: 1.5;
+      padding: 7px 10px;
+      border-radius: 10px;
+      z-index: 40;
+      pointer-events: none;
       animation: textPulse 1.8s ease-in-out infinite;
+      transition: opacity 0.4s ease;
+    }
+
+    .map-hint-text.hidden {
+      opacity: 0 !important;
+      animation: none;
     }
 
     @keyframes textPulse {
       0%, 100% { opacity: 1; }
-      50%       { opacity: 0.25; }
+      50%       { opacity: 0.3; }
     }
 
     .phone-cta-pill {
@@ -819,7 +833,6 @@
       </div>
     </div>
     <div class="hero-col-map">
-      <p class="map-hint-text">Dê zoom no mapa e encontre a rampa mais próxima de você.</p>
       <div class="phone-mockup">
         <div class="phone-notch"></div>
         <div class="phone-screen">
@@ -827,6 +840,7 @@
             <span class="phone-topbar-logo">Rampa<span>App</span></span>
           </div>
           <div id="phone-map"></div>
+          <p class="map-hint-text" id="map-hint-text">Dê zoom no mapa e encontre a rampa mais próxima de você.</p>
           <a class="phone-cta-pill" href="https://play.google.com/store/apps/details?id=com.kaiquezanettin.rampaapp">
             Ver detalhes → Baixar app
           </a>
@@ -1076,6 +1090,13 @@
       });
       const brBounds = bounds.filter(([lt, lg]) => lt > -34 && lt < 6 && lg > -74 && lg < -34);
       if (brBounds.length > 0) map.fitBounds(brBounds, { padding: [20, 20], maxZoom: 10 });
+
+    const hint = document.getElementById('map-hint-text');
+    function hideHint() {
+      if (hint) hint.classList.add('hidden');
+      map.off('click touchstart movestart zoomstart', hideHint);
+    }
+    map.on('click touchstart movestart zoomstart', hideHint);
     })
     .catch(() => {});
   })();
