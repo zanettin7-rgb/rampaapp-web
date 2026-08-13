@@ -1092,11 +1092,10 @@
       if (brBounds.length > 0) map.fitBounds(brBounds, { padding: [20, 20], maxZoom: 10 });
 
     const hint = document.getElementById('map-hint-text');
-    function hideHint() {
-      if (hint) hint.classList.add('hidden');
-      map.off('click touchstart', hideHint);
-    }
-    setTimeout(() => map.on('click touchstart', hideHint), 2000);
+    const mapEl = document.getElementById('phone-map');
+    function hideHint() { if (hint) hint.classList.add('hidden'); }
+    mapEl.addEventListener('mousedown', hideHint, { once: true });
+    mapEl.addEventListener('touchstart', hideHint, { once: true });
     })
     .catch(() => {});
   })();
