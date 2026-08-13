@@ -965,20 +965,36 @@
     const map = L.map('phone-map', {
       zoomControl: false,
       attributionControl: false,
-    }).setView([-15, -50], 4);
+    }).setView([-23.5, -46.8], 8);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    // Satélite híbrido (Esri World Imagery + labels)
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 18,
+    }).addTo(map);
+    L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 18,
+      opacity: 0.8,
     }).addTo(map);
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    const icon = L.divIcon({
-      className: '',
-      html: '<div style="width:12px;height:12px;background:#FF8000;border:2px solid white;border-radius:50%;box-shadow:0 0 6px rgba(255,128,0,0.7)"></div>',
-      iconSize: [12, 12],
-      iconAnchor: [6, 6],
-    });
+    function makeIcon(estado) {
+      const cores = { boa: '#34A853', regular: '#FBBC04', ruim: '#EA4335', fechada: '#9E9E9E' };
+      const cor = cores[estado] || '#34A853';
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
+        <path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z" fill="${cor}" stroke="white" stroke-width="2"/>
+        <circle cx="14" cy="14" r="5" fill="white"/>
+      </svg>`;
+      return L.divIcon({
+        className: '',
+        html: svg,
+        iconSize: [28, 36],
+        iconAnchor: [14, 36],
+        popupAnchor: [0, -36],
+      });
+    }
+
+    const estadoLabel = { boa: '✅ Boa', regular: '⚠️ Regular', ruim: '🔴 Ruim', fechada: '🚫 Fechada' };
 
     fetch(`${SUPA_URL}/rest/v1/rampas?select=id,nome,latitude,longitude,estado&limit=200`, {
       headers: {
@@ -989,23 +1005,26 @@
     .then(r => r.json())
     .then(rampas => {
       if (!Array.isArray(rampas)) return;
+      const bounds = [];
       rampas.forEach(r => {
         const lat = parseFloat(r.latitude);
         const lng = parseFloat(r.longitude);
         if (isNaN(lat) || isNaN(lng)) return;
-        const condicao = r.estado || 'Desconhecida';
-        L.marker([lat, lng], { icon })
+        bounds.push([lat, lng]);
+        const label = estadoLabel[r.estado] || '❓ Desconhecida';
+        L.marker([lat, lng], { icon: makeIcon(r.estado) })
           .addTo(map)
           .bindPopup(`
-            <div style="font-family:sans-serif;font-size:13px;min-width:140px">
-              <strong style="color:#003F5E">${r.nome || 'Rampa'}</strong><br>
-              <span style="color:#546E7A">Condição: ${condicao}</span><br>
-              <a href="${PLAY_URL}" style="color:#FF8000;font-weight:700;text-decoration:none">
+            <div style="font-family:-apple-system,sans-serif;font-size:13px;min-width:150px;line-height:1.5">
+              <strong style="color:#003F5E;font-size:14px">${r.nome || 'Rampa'}</strong><br>
+              <span style="color:#546E7A">${label}</span><br>
+              <a href="${PLAY_URL}" target="_blank" style="display:inline-block;margin-top:8px;background:#FF8000;color:white;font-weight:700;text-decoration:none;padding:5px 12px;border-radius:20px;font-size:12px">
                 Ver no app →
               </a>
             </div>
           `);
       });
+      if (bounds.length > 0) map.fitBounds(bounds, { padding: [20, 20], maxZoom: 10 });
     })
     .catch(() => {});
   })();
