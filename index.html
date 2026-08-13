@@ -543,19 +543,11 @@
       top: 52px; left: 0; right: 0; bottom: 0;
     }
 
-    /* ── MAPA OVERLAY HINT ── */
-    .map-overlay {
-      position: absolute;
-      top: 52px; left: 0; right: 0; bottom: 0;
-      z-index: 40;
-      cursor: pointer;
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-end;
-      padding: 12px 10px;
-    }
-
+    /* ── MAPA HINT ── */
     .map-overlay-hint {
+      position: absolute;
+      top: 60px;
+      right: 10px;
       background: rgba(0,0,0,0.6);
       color: #FF8000;
       font-size: 11px;
@@ -565,12 +557,16 @@
       border-radius: 10px;
       max-width: 110px;
       text-align: left;
-      animation: hintPulse 1.8s ease-in-out infinite;
+      z-index: 40;
+      pointer-events: none;
+      animation: hintLife 8s ease-in-out forwards;
     }
 
-    @keyframes hintPulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.25; }
+    @keyframes hintLife {
+      0%   { opacity: 0; }
+      10%  { opacity: 1; }
+      70%  { opacity: 1; }
+      100% { opacity: 0; }
     }
 
     .phone-cta-pill {
@@ -837,9 +833,7 @@
             <span class="phone-topbar-logo">Rampa<span>App</span></span>
           </div>
           <div id="phone-map"></div>
-          <div class="map-overlay" id="map-overlay">
-            <div class="map-overlay-hint">Dê zoom no mapa e encontre a rampa mais próxima de você.</div>
-          </div>
+          <div class="map-overlay-hint">Dê zoom no mapa e encontre a rampa mais próxima de você.</div>
 <a class="phone-cta-pill" href="https://play.google.com/store/apps/details?id=com.kaiquezanettin.rampaapp">
             Ver detalhes → Baixar app
           </a>
@@ -1090,14 +1084,6 @@
       const brBounds = bounds.filter(([lt, lg]) => lt > -34 && lt < 6 && lg > -74 && lg < -34);
       if (brBounds.length > 0) map.fitBounds(brBounds, { padding: [20, 20], maxZoom: 10 });
 
-    const overlay = document.getElementById('map-overlay');
-    if (overlay) {
-      overlay.addEventListener('click', function() {
-        overlay.style.transition = 'opacity 0.4s ease';
-        overlay.style.opacity = '0';
-        setTimeout(() => overlay.remove(), 400);
-      }, { once: true });
-    }
 
     })
     .catch(() => {});
