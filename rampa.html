@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rampa — RampaApp</title>
+<meta name="description" content="Veja esta rampa de barco no RampaApp — mapa colaborativo de rampas náuticas no Brasil.">
+<link rel="canonical" href="https://rampaapp.com.br/rampa">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;background:#F0F7FC;color:#1A2E3B;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center}
+.logo{font-size:28px;font-weight:800;margin-bottom:32px}
+.logo span{color:#FF8000}
+.card{background:#fff;border-radius:20px;padding:32px 24px;max-width:400px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,0.1)}
+.rampa-nome{font-size:22px;font-weight:800;color:#1A2E3B;margin-bottom:8px}
+.rampa-sub{font-size:14px;color:#546E7A;margin-bottom:28px}
+.btn-app{display:block;background:#FF8000;color:#fff;padding:16px 32px;border-radius:50px;font-weight:700;font-size:16px;text-decoration:none;margin-bottom:12px}
+.btn-play{display:block;background:#005F8E;color:#fff;padding:14px 32px;border-radius:50px;font-weight:600;font-size:14px;text-decoration:none}
+.loading{color:#90A4AE;font-size:14px}
+</style>
+</head>
+<body>
+<div class="logo">Rampa<span>App</span></div>
+<div class="card" id="card">
+  <p class="loading">Carregando informações da rampa...</p>
+</div>
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get('id');
+const SUPABASE_URL = 'https://mbtnvnlcatnlmzgfwrxv.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1idG52bmxjYXRubG16Z2Z3cnh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ5MzQ4NzgsImV4cCI6MjA2MDUxMDg3OH0.n4W_PCXRUFXHdwhHOm1OIi7d7OAj4ZaOBxphKJKvHqM';
+
+const deepLink = `https://rampaapp.com.br/rampa?id=${id}`;
+const playStore = 'https://play.google.com/store/apps/details?id=com.kaiquezanettin.rampaapp';
+
+async function carregarRampa() {
+  const card = document.getElementById('card');
+  if (!id) {
+    card.innerHTML = `<p class="rampa-sub">Rampa não encontrada.</p><a class="btn-play" href="${playStore}">Baixar RampaApp</a>`;
+    return;
+  }
+
+  // Tenta abrir o app nativamente
+  window.location.href = deepLink;
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rampas?id=eq.${id}&select=nome,estado`, {
+      headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` }
+    });
+    const [rampa] = await res.json();
+    const nome = rampa?.nome || 'Rampa de barco';
+    card.innerHTML = `
+      <div class="rampa-nome">🚤 ${nome}</div>
+      <p class="rampa-sub">Abra no RampaApp para ver localização, avaliações e situação em tempo real.</p>
+      <a class="btn-app" href="${deepLink}">Abrir no RampaApp</a>
+      <a class="btn-play" href="${playStore}">Baixar o RampaApp grátis</a>
+    `;
+  } catch {
+    card.innerHTML = `
+      <div class="rampa-nome">🚤 Rampa de barco</div>
+      <p class="rampa-sub">Abra no RampaApp para ver localização e avaliações.</p>
+      <a class="btn-app" href="${deepLink}">Abrir no RampaApp</a>
+      <a class="btn-play" href="${playStore}">Baixar o RampaApp grátis</a>
+    `;
+  }
+}
+
+carregarRampa();
+</script>
+</body>
+</html>
