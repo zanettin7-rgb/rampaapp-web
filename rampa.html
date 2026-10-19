@@ -30,8 +30,9 @@ const id = params.get('id');
 const SUPABASE_URL = 'https://mbtnvnlcatnlmzgfwrxv.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1idG52bmxjYXRubG16Z2Z3cnh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ5MzQ4NzgsImV4cCI6MjA2MDUxMDg3OH0.n4W_PCXRUFXHdwhHOm1OIi7d7OAj4ZaOBxphKJKvHqM';
 
-const deepLink = `https://rampaapp.com.br/rampa?id=${id}`;
 const playStore = 'https://play.google.com/store/apps/details?id=com.kaiquezanettin.rampaapp';
+// Intent URI abre o app diretamente no Android sem recarregar a página
+const intentLink = `intent://rampa?id=${id}#Intent;scheme=rampaapp;package=com.kaiquezanettin.rampaapp;S.browser_fallback_url=${encodeURIComponent(playStore)};end`;
 
 async function carregarRampa() {
   const card = document.getElementById('card');
@@ -39,9 +40,6 @@ async function carregarRampa() {
     card.innerHTML = `<p class="rampa-sub">Rampa não encontrada.</p><a class="btn-play" href="${playStore}">Baixar RampaApp</a>`;
     return;
   }
-
-  // Tenta abrir o app nativamente
-  window.location.href = deepLink;
 
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/rampas?id=eq.${id}&select=nome,estado`, {
@@ -52,14 +50,14 @@ async function carregarRampa() {
     card.innerHTML = `
       <div class="rampa-nome">🚤 ${nome}</div>
       <p class="rampa-sub">Abra no RampaApp para ver localização, avaliações e situação em tempo real.</p>
-      <a class="btn-app" href="${deepLink}">Abrir no RampaApp</a>
+      <a class="btn-app" href="${intentLink}">Abrir no RampaApp</a>
       <a class="btn-play" href="${playStore}">Baixar o RampaApp grátis</a>
     `;
   } catch {
     card.innerHTML = `
       <div class="rampa-nome">🚤 Rampa de barco</div>
       <p class="rampa-sub">Abra no RampaApp para ver localização e avaliações.</p>
-      <a class="btn-app" href="${deepLink}">Abrir no RampaApp</a>
+      <a class="btn-app" href="${intentLink}">Abrir no RampaApp</a>
       <a class="btn-play" href="${playStore}">Baixar o RampaApp grátis</a>
     `;
   }
